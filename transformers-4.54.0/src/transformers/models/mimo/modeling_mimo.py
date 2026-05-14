@@ -228,10 +228,12 @@ class MiMoForCausalLM(Qwen2ForCausalLM):
         loss_ntp = loss
 
         hidden_states_mtp = outputs.hidden_states_mtp
-        assert len(self.config.mtp_loss_step_weights) == self.config.num_speculative_steps, \
-            f"Expected {self.config.num_speculative_steps} MTP loss weights, but got {len(self.config.mtp_loss_step_weights)}"
-        assert sum(self.config.mtp_loss_step_weights) == 1.0, \
-            f"Expected MTP loss weights of all steps to sum to 1.0, but got {sum(self.config.mtp_loss_step_weights)}"
+
+        if labels is not None:
+            assert len(self.config.mtp_loss_step_weights) == self.config.num_speculative_steps, \
+                f"Expected {self.config.num_speculative_steps} MTP loss weights, but got {len(self.config.mtp_loss_step_weights)}"
+            assert sum(self.config.mtp_loss_step_weights) == 1.0, \
+                f"Expected MTP loss weights of all steps to sum to 1.0, but got {sum(self.config.mtp_loss_step_weights)}"
         
         mtp_loss_sum = None
         mtp_loss = ()
